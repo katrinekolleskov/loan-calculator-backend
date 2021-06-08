@@ -1,6 +1,23 @@
-package com.example.loancalculatorbackend.calculator;
+package com.example.loancalculatorbackend.houseloan;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table
 public class HouseLoan {
+    @Id
+    @SequenceGenerator(
+            name = "houseloan_sequence",
+            sequenceName = "houseloan_sequence",
+            allocationSize = 1
+    )
+
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "houseloan_sequence"
+    )
+
     private Long id;
     private Integer amount;
     private Integer years;
