@@ -1,7 +1,10 @@
 package com.example.loancalculatorbackend.houseloan;
 
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table
@@ -19,27 +22,56 @@ public class HouseLoan {
     )
 
     private Long id;
-    private Integer amount;
+    private Double amount;
     private Integer years;
-    // Will not be initialized by end user.
-    private Integer term;
-    private Integer installment;
-    private Integer interest;
-    private Integer principal;
-    private Integer outstandingDebt;
+    private Double interest;
+    private Double calculatedInterest;
+    private Integer calculatedPayments;
+    private Double principal;
+    private ArrayList<Double> installment;
+    private ArrayList<Double> interestRate;
+    private Double outstandingDebt;
+    private ArrayList<Double> outstandingDebtList;
+    private ArrayList<Integer> term;
+
+
 
     // Probably not necessary
     public HouseLoan() {
     }
 
-    public HouseLoan(Long id, Integer amount, Integer years) {
+    public HouseLoan(Long id, Double amount, Integer years) {
         this.id = id;
         this.amount = amount;
         this.years = years;
-    }
+
+        this.interest = 3.5;
+        this.calculatedInterest = this.interest / 100 / 12;
+        this.calculatedPayments = years * 12;
+        this.principal = amount / (years * 12); // Need to check for zero.
+        this.outstandingDebt = amount;
+
+        this.installment = new ArrayList<Double>(calculatedPayments);
+        this.interestRate = new ArrayList<Double>(calculatedPayments);
+        this.outstandingDebtList = new ArrayList<Double>(calculatedPayments);
+        this.term = new ArrayList<Integer>(calculatedPayments);
+
+        // Error
+
+        for (Integer i = 0; i < calculatedPayments; i++) {
+            Double installment = principal + calculatedInterest * outstandingDebt;
+
+            this.term.add(i+1);
+            this.interestRate.add(calculatedInterest * outstandingDebt);
+            this.installment.add(installment);
+            this.outstandingDebt = outstandingDebt - principal;
+            this.outstandingDebtList.add(outstandingDebt);
+        }
+    };
+
 
     // Kill it
-    public HouseLoan(Long id, Integer amount, Integer years, Integer term, Integer installment, Integer interest, Integer principal, Integer outstandingDebt) {
+   /* public HouseLoan(Long id, Integer amount, Integer years, Integer term, Integer installment, Integer interest, Integer principal, Integer outstandingDebt) {
         this.id = id;
         this.amount = amount;
         this.years = years;
@@ -48,7 +80,7 @@ public class HouseLoan {
         this.interest = interest;
         this.principal = principal;
         this.outstandingDebt = outstandingDebt;
-    }
+    }*/
 
     public Long getId() {
         return id;
@@ -58,11 +90,11 @@ public class HouseLoan {
         this.id = id;
     }
 
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
@@ -74,57 +106,75 @@ public class HouseLoan {
         this.years = years;
     }
 
-    public Integer getTerm() {
-        return term;
-    }
-
-    public void setTerm(Integer term) {
-        this.term = term;
-    }
-
-    public Integer getInstallment() {
-        return installment;
-    }
-
-    public void setInstallment(Integer installment) {
-        this.installment = installment;
-    }
-
-    public Integer getInterest() {
+    public Double getInterest() {
         return interest;
     }
 
-    public void setInterest(Integer interest) {
+    public void setInterest(Double interest) {
         this.interest = interest;
     }
 
-    public Integer getPrincipal() {
+    public Double getCalculatedInterest() {
+        return calculatedInterest;
+    }
+
+    public void setCalculatedInterest(Double calculatedInterest) {
+        this.calculatedInterest = calculatedInterest;
+    }
+
+    public Integer getCalculatedPayments() {
+        return calculatedPayments;
+    }
+
+    public void setCalculatedPayments(Integer calculatedPayments) {
+        this.calculatedPayments = calculatedPayments;
+    }
+
+    public Double getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(Integer principal) {
+    public void setPrincipal(Double principal) {
         this.principal = principal;
     }
 
-    public Integer getOutstandingDebt() {
+    public ArrayList<Double> getInstallment() {
+        return installment;
+    }
+
+    public void setInstallment(ArrayList<Double> installment) {
+        this.installment = installment;
+    }
+
+    public ArrayList<Double> getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(ArrayList<Double> interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public Double getOutstandingDebt() {
         return outstandingDebt;
     }
 
-    public void setOutstandingDebt(Integer outstandingDebt) {
+    public void setOutstandingDebt(Double outstandingDebt) {
         this.outstandingDebt = outstandingDebt;
     }
 
-    @Override
-    public String toString() {
-        return "HouseLoan{" +
-                "id=" + id +
-                ", amount=" + amount +
-                ", years=" + years +
-                ", term=" + term +
-                ", installment=" + installment +
-                ", interest=" + interest +
-                ", principal=" + principal +
-                ", outstandingDebt=" + outstandingDebt +
-                '}';
+    public ArrayList<Double> getOutstandingDebtList() {
+        return outstandingDebtList;
+    }
+
+    public void setOutstandingDebtList(ArrayList<Double> outstandingDebtList) {
+        this.outstandingDebtList = outstandingDebtList;
+    }
+
+    public ArrayList<Integer> getTerm() {
+        return term;
+    }
+
+    public void setTerm(ArrayList<Integer> term) {
+        this.term = term;
     }
 }
