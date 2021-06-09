@@ -26,8 +26,18 @@ public class HouseLoanController {
         houseLoanService.addNewHouseLOan(houseLoan);
     }
 
-    @DeleteMapping(path = "{houseLoanId")
+    // Don't think this is necessary for the task at hand, but I figured it was well enough to add (for scaling!).
+    @DeleteMapping(path = "{houseLoanId}")
     public void deleteHouseLoan(@PathVariable("houseLoanId") Long houseLoanId) {
         houseLoanService.deleteHouseLoan(houseLoanId);
+    }
+
+    // Don't think this is necessary for the task at hand, but I figured it was well enough to add (for scaling!).
+    @PutMapping(path = "{houseLoanId}")
+    public void updateHouseLoan(
+            @PathVariable("houseLoanId") Long houseLoanId,
+            @RequestParam(required  = false) Double amount,
+            @RequestParam(required = false) Integer years) {
+        houseLoanService.updateHouseLoan(houseLoanId, amount, years);
     }
 }

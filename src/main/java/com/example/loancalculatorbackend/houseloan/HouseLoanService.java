@@ -3,8 +3,8 @@ package com.example.loancalculatorbackend.houseloan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HouseLoanService {
@@ -25,6 +25,7 @@ public class HouseLoanService {
     }
 
     public void deleteHouseLoan(Long houseLoanId) {
+        System.out.println("houseloan: " + houseLoanId);
         boolean exists = houseloanRepository.existsById(houseLoanId);
         if (!exists) {
             throw new IllegalStateException (
@@ -32,5 +33,20 @@ public class HouseLoanService {
             );
         }
         houseloanRepository.deleteById(houseLoanId);
+    }
+
+    @Transactional
+    public void updateHouseLoan(Long houseLoanId, Double amount, Integer years) {
+        HouseLoan houseLoan = houseloanRepository.findById(houseLoanId)
+                .orElseThrow(() -> new IllegalStateException (
+                    "House Loan with " + houseLoanId + " does not exist."));
+
+        if (amount != null && amount > 0 && !houseLoan.getAmount().equals(amount)) {
+            houseLoan.setAmount(amount);
+        }
+
+        if (years != null && years > 0 && houseLoan.getYears() != years) {
+            houseLoan.setYears(years);
+        }
     }
 }
