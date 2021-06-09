@@ -12,8 +12,8 @@ public class HouseLoanConfig {
     @Bean
     CommandLineRunner commandLineRunner(HouseLoanRepository repository) {
         return args -> {
-         HouseLoan seilduk =  new HouseLoan(1L, 50000.0, 12);
-         HouseLoan baerum = new HouseLoan (2L, 80000.0, 50);
+         HouseLoan seilduk =  new HouseLoan(50000.0, 2);
+         HouseLoan baerum = new HouseLoan (80000.0, 1);
 
          repository.saveAll(
                  List.of(seilduk, baerum)

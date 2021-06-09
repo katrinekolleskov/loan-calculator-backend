@@ -1,9 +1,7 @@
 package com.example.loancalculatorbackend.houseloan;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +19,15 @@ public class HouseLoanController {
     @GetMapping
     public List<HouseLoan> getHouseloan () {
         return houseLoanService.getHouseloan();
+    }
+
+    @PostMapping
+    public void registerNewHouseLoan (@RequestBody HouseLoan houseLoan) {
+        houseLoanService.addNewHouseLOan(houseLoan);
+    }
+
+    @DeleteMapping(path = "{houseLoanId")
+    public void deleteHouseLoan(@PathVariable("houseLoanId") Long houseLoanId) {
+        houseLoanService.deleteHouseLoan(houseLoanId);
     }
 }

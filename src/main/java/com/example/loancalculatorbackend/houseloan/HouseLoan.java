@@ -2,9 +2,6 @@ package com.example.loancalculatorbackend.houseloan;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @Entity
 @Table
@@ -24,70 +21,39 @@ public class HouseLoan {
     private Long id;
     private Double amount;
     private Integer years;
+    @Transient
     private Double interest;
+    @Transient
     private Double calculatedInterest;
+    @Transient
     private Integer calculatedPayments;
+    @Transient
     private Double principal;
+    @Transient
     private ArrayList<Double> installment;
+    @Transient
     private ArrayList<Double> interestRate;
-    private Double outstandingDebt;
+    @Transient
+    private Double outstandingDebt; // Not really necessary since it does the same thing as amount, but I thought it was cleaner code reading-wise, but confusing for the user of the api.
+    @Transient
     private ArrayList<Double> outstandingDebtList;
+    @Transient
     private ArrayList<Integer> term;
 
 
 
-    // Probably not necessary
+    // Not necessary
     public HouseLoan() {
     }
 
-    public HouseLoan(Long id, Double amount, Integer years) {
-        this.id = id;
+    public HouseLoan(Double amount, Integer years) {
         this.amount = amount;
         this.years = years;
-
-        this.interest = 3.5;
-        this.calculatedInterest = this.interest / 100 / 12;
-        this.calculatedPayments = years * 12;
-        this.principal = amount / (years * 12); // Need to check for zero.
-        this.outstandingDebt = amount;
-
-        this.installment = new ArrayList<Double>(calculatedPayments);
-        this.interestRate = new ArrayList<Double>(calculatedPayments);
-        this.outstandingDebtList = new ArrayList<Double>(calculatedPayments);
-        this.term = new ArrayList<Integer>(calculatedPayments);
-
-        // Error
-
-        for (Integer i = 0; i < calculatedPayments; i++) {
-            Double installment = principal + calculatedInterest * outstandingDebt;
-
-            this.term.add(i+1);
-            this.interestRate.add(calculatedInterest * outstandingDebt);
-            this.installment.add(installment);
-            this.outstandingDebt = outstandingDebt - principal;
-            this.outstandingDebtList.add(outstandingDebt);
-        }
     };
 
 
-    // Kill it
-   /* public HouseLoan(Long id, Integer amount, Integer years, Integer term, Integer installment, Integer interest, Integer principal, Integer outstandingDebt) {
-        this.id = id;
-        this.amount = amount;
-        this.years = years;
-        this.term = term;
-        this.installment = installment;
-        this.interest = interest;
-        this.principal = principal;
-        this.outstandingDebt = outstandingDebt;
-    }*/
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Double getAmount() {
@@ -107,74 +73,76 @@ public class HouseLoan {
     }
 
     public Double getInterest() {
-        return interest;
-    }
-
-    public void setInterest(Double interest) {
-        this.interest = interest;
+        return 3.5;
     }
 
     public Double getCalculatedInterest() {
-        return calculatedInterest;
-    }
-
-    public void setCalculatedInterest(Double calculatedInterest) {
-        this.calculatedInterest = calculatedInterest;
+        return getInterest() / 100 / 12;
     }
 
     public Integer getCalculatedPayments() {
-        return calculatedPayments;
+        return years * 12;
     }
 
-    public void setCalculatedPayments(Integer calculatedPayments) {
-        this.calculatedPayments = calculatedPayments;
-    }
 
     public Double getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(Double principal) {
-        this.principal = principal;
+        return getAmount() / (getYears() * 12);
     }
 
     public ArrayList<Double> getInstallment() {
-        return installment;
-    }
+        ArrayList<Double> installmentList = new ArrayList<Double>(getCalculatedPayments());
+        Double outstandingDebt = getOutstandingDebt();
 
-    public void setInstallment(ArrayList<Double> installment) {
-        this.installment = installment;
+        for (Integer i = 0; i < getCalculatedPayments(); i++) {
+            Double installment = getPrincipal() + getCalculatedInterest() * outstandingDebt;
+            installmentList.add(installment);
+            outstandingDebt = outstandingDebt - getPrincipal();
+        }
+        return installmentList;
     }
 
     public ArrayList<Double> getInterestRate() {
+        ArrayList<Double> interestRate = new ArrayList<Double>(getCalculatedPayments());
+        Double outstandingDebt = getOutstandingDebt();
+
+        for (Integer i = 0; i < getCalculatedPayments(); i++) {
+           interestRate.add(getCalculatedInterest() * outstandingDebt);
+           outstandingDebt = outstandingDebt - getPrincipal();
+        }
         return interestRate;
     }
 
-    public void setInterestRate(ArrayList<Double> interestRate) {
-        this.interestRate = interestRate;
-    }
-
     public Double getOutstandingDebt() {
-        return outstandingDebt;
-    }
-
-    public void setOutstandingDebt(Double outstandingDebt) {
-        this.outstandingDebt = outstandingDebt;
+        return getAmount();
     }
 
     public ArrayList<Double> getOutstandingDebtList() {
+        ArrayList<Double> outstandingDebtList = new ArrayList<Double>(getCalculatedPayments());
+        Double outstandingDebt = getOutstandingDebt();
+
+        for (Integer i = 0; i < getCalculatedPayments(); i++) {
+            outstandingDebt = outstandingDebt - getPrincipal();
+            outstandingDebtList.add(outstandingDebt);
+        }
         return outstandingDebtList;
     }
 
-    public void setOutstandingDebtList(ArrayList<Double> outstandingDebtList) {
-        this.outstandingDebtList = outstandingDebtList;
-    }
-
     public ArrayList<Integer> getTerm() {
+        ArrayList<Integer> term = new ArrayList<Integer>(getCalculatedPayments());
+
+        for (Integer i = 0; i < getCalculatedPayments(); i++) {
+            term.add(i+1);
+        }
         return term;
     }
 
-    public void setTerm(ArrayList<Integer> term) {
-        this.term = term;
+    @Override
+    public String toString() {
+        return "HouseLoan{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", years=" + years +
+                ", interest=" + interest +
+                '}';
     }
 }
