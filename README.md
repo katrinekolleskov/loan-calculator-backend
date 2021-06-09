@@ -1,4 +1,4 @@
-# loan-calculator-backend
+# Loan-calculator-backend
 
 This is a very simple set-up for an end-point for a user that wishes to apply for a house loan.
 
