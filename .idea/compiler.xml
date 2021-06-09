@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="loan-calculator-backend" target="16" />
+      <module name="loan-calculator-backend" target="15" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
